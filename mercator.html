@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mercator Nakup - Jani Kojc</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Navigation buttons to switch between pages -->
+  <nav class="navbar">
+    <button onclick="window.location.href='index.html'">O meni</button>
+    <button onclick="window.location.href='alma_mater.html'">Alma mater</button>
+    <button onclick="window.location.href='aktivnosti.html'">Moje aktivnosti</button>
+    <button onclick="window.location.href='mercator.html'">Mercator nakup</button>
+    <button onclick="window.location.href='avtomobili.html'">Avtomobili</button>
+  </nav>
+
+  <main class="main-content">
+    <section class="activities-section">
+      <h1>Moj nakup v Mercatorju</h1>
+
+      <!-- Input fields for adding a new item -->
+      <div class="input-group">
+        <input type="text" id="izdelekInput" placeholder="Ime izdelka" />
+        <input type="number" id="cenaInput" placeholder="Cena (EUR)" step="0.01" />
+        <button onclick="dodajIzdelek()">Dodaj</button>
+      </div>
+
+      <!-- Table displaying shopping items -->
+      <table>
+        <thead>
+          <tr>
+            <th>Izdelek</th>
+            <th>Cena</th>
+            <th>Odstrani</th>
+          </tr>
+        </thead>
+        <tbody id="nakupTabela"></tbody>
+      </table>
+
+      <!-- Total cost summary -->
+      <hr />
+      <div>
+        <strong>Skupna vsota nakupa:</strong>
+        <span id="totalSpan">0</span> EUR
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Load all shopping items from the server and display them in the table
+    async function naloziIzdelke() {
+      const res = await fetch("api_mercator.php");
+      const izdelki = await res.json();
+      const tabela = document.getElementById("nakupTabela");
+      tabela.innerHTML = "";
+
+      // For each item, create a new row in the table
+      izdelki.forEach(i => {
+        const vrstica = document.createElement("tr");
+        vrstica.innerHTML = `
+          <td>${i.naziv}</td>
+          <td>${i.cena}</td>
+          <td><button class="remove-btn" onclick="odstraniIzdelek(${i.stevilka})">X</button></td>
+        `;
+        tabela.appendChild(vrstica);
+      });
+
+      // Load total purchase cost from server
+      const resTotal = await fetch("api_mercator.php?action=total");
+      const dataTotal = await resTotal.json();
+      document.getElementById("totalSpan").textContent = dataTotal.total || 0;
+    }
+
+    // Add a new item to the shopping list
+    async function dodajIzdelek() {
+      const naziv = document.getElementById("izdelekInput").value.trim();
+      const cena = parseFloat(document.getElementById("cenaInput").value.trim()) || 0;
+
+      // Basic validation
+      if (!naziv || cena <= 0) {
+        alert("Vnesi ime izdelka in pozitivno ceno.");
+        return;
+      }
+
+      // Send POST request to API to save item
+      const res = await fetch("api_mercator.php?action=dodaj", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ naziv, cena })
+      });
+
+      const odgovor = await res.json();
+      alert(odgovor.success || odgovor.error);
+
+      // Clear input fields and reload the item list
+      document.getElementById("izdelekInput").value = "";
+      document.getElementById("cenaInput").value = "";
+      naloziIzdelke();
+    }
+
+    // Delete an item by ID
+    async function odstraniIzdelek(id) {
+      const res = await fetch("api_mercator.php?action=izbrisi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+
+      const odgovor = await res.json();
+      alert(odgovor.success || odgovor.error);
+
+      // Reload the list to reflect changes
+      naloziIzdelke();
+    }
+
+    // Load items immediately when the page finishes loading
+    window.onload = naloziIzdelke;
+  </script>
+
+</body>
+</html>

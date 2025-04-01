@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Promet avtomobilov - Jani Kojc</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Navigacija -->
+  <nav class="navbar">
+    <button onclick="window.location.href='index.html'">O meni</button>
+    <button onclick="window.location.href='alma_mater.html'">Alma mater</button>
+    <button onclick="window.location.href='aktivnosti.html'">Moje aktivnosti</button>
+    <button onclick="window.location.href='mercator.html'">Mercator nakup</button>
+    <button onclick="window.location.href='avtomobili.html'">Avtomobili</button>
+  </nav>
+
+  <main class="main-content">
+    <section class="activities-section">
+      <h1>Promet avtomobilov</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Št.</th>
+            <th>Datum</th>
+            <th>Število</th>
+            <th>Kraj</th>
+          </tr>
+        </thead>
+        <tbody id="avtomobiliTabela"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    async function naloziAvtomobile() {
+      const res = await fetch("api_avtomobili.php");
+      const data = await res.json();
+      const tabela = document.getElementById("avtomobiliTabela"); // <-- POPRAVLJENO
+  
+      tabela.innerHTML = "";
+  
+      data.forEach(a => {
+        const vrstica = document.createElement("tr");
+        vrstica.innerHTML = `
+          <td>${a.stevilka}</td>
+          <td>${a.datum_zajema}</td>
+          <td>${a.stevilo}</td>
+          <td>${a.kraj}</td>
+        `;
+        tabela.appendChild(vrstica);
+      });
+    }
+  
+    window.onload = naloziAvtomobile;
+  </script>
+  
+</body>
+</html>

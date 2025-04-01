@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moje aktivnosti - Jani Kojc</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Navigation bar to switch between pages -->
+  <nav class="navbar">
+    <button onclick="window.location.href='index.html'">O meni</button>
+    <button onclick="window.location.href='alma_mater.html'">Alma mater</button>
+    <button onclick="window.location.href='aktivnosti.html'">Moje aktivnosti</button>
+    <button onclick="window.location.href='mercator.html'">Mercator nakup</button>
+    <button onclick="window.location.href='avtomobili.html'">Avtomobili</button>
+  </nav>
+
+  <main class="main-content">
+    <section class="activities-section">
+      <h1>Moje aktivnosti</h1>
+      
+      <!-- Input form to add a new activity -->
+      <div class="input-group">
+        <input type="text" id="aktivnostInput" placeholder="Vnesi aktivnost" />
+        <select id="znanjeSelect">
+          <option value="Začetnik">Začetnik</option>
+          <option value="Izkušeni">Izkušeni</option>
+          <option value="Profesionalec">Profesionalec</option>
+        </select>
+        <input type="text" id="casInput" placeholder="Čas izvajanja (npr. 2 leti)" />
+        <button onclick="dodajAktivnost()">Dodaj</button>
+      </div>
+
+      <!-- Table for displaying activities -->
+      <table>
+        <thead>
+          <tr>
+            <th>Aktivnost</th>
+            <th>Znanje</th>
+            <th>Čas</th>
+            <th>Odstrani</th>
+          </tr>
+        </thead>
+        <tbody id="aktivnostiTabela"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    /**
+     * Loads all activities from the database and populates the table.
+     */
+    async function naloziAktivnosti() {
+      // Send GET request to API to fetch activities
+      const res = await fetch("api_aktivnosti.php");
+      const data = await res.json();
+
+      // Get the table body element and clear previous rows
+      const tabela = document.getElementById("aktivnostiTabela");
+      tabela.innerHTML = "";
+
+      // Loop through received activities and add each to the table
+      data.forEach(a => {
+        const vrstica = document.createElement("tr");
+        vrstica.innerHTML = `
+          <td>${a.aktivnost}</td>
+          <td>${a.znanje}</td>
+          <td>${a.cas}</td>
+          <td><button class="remove-btn" onclick="odstraniAktivnost(${a.id})">X</button></td>
+        `;
+        tabela.appendChild(vrstica);
+      });
+    }
+
+    /**
+     * Adds a new activity to the database.
+     * Triggered when the "Dodaj" button is clicked.
+     */
+    async function dodajAktivnost() {
+      // Get values from input fields
+      const aktivnost = document.getElementById("aktivnostInput").value.trim();
+      const znanje = document.getElementById("znanjeSelect").value;
+      const cas = document.getElementById("casInput").value.trim();
+
+      // Validate inputs
+      if (!aktivnost || !cas) {
+        alert("Izpolni vsa polja!");
+        return;
+      }
+
+      // Send POST request to API to add the activity
+      const res = await fetch("api_aktivnosti.php?action=dodaj", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ aktivnost, znanje, cas })
+      });
+
+      // Parse response and show message
+      const odgovor = await res.json();
+      alert(odgovor.success || odgovor.error);
+
+      // Refresh table and clear input fields
+      naloziAktivnosti();
+      document.getElementById("aktivnostInput").value = "";
+      document.getElementById("casInput").value = "";
+      document.getElementById("znanjeSelect").value = "Začetnik";
+    }
+
+    /**
+     * Deletes an activity from the database by ID.
+     * @param {number} id - ID of the activity to delete.
+     */
+    async function odstraniAktivnost(id) {
+      // Send POST request to API to delete the activity
+      const res = await fetch("api_aktivnosti.php?action=izbrisi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+
+      // Parse response and show message
+      const odgovor = await res.json();
+      alert(odgovor.success || odgovor.error);
+
+      // Reload the updated list of activities
+      naloziAktivnosti();
+    }
+
+    // Automatically load activities when the page finishes loading
+    window.onload = naloziAktivnosti;
+  </script>
+</body>
+</html>

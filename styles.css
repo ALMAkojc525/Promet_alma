@@ -1,0 +1,155 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #000;
+  }
+  
+  /* Navigacijska vrstica */
+  .navbar {
+    background-color: #000;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .navbar button {
+    background-color: #c0392b; /* rdeča */
+    color: #fff;
+    border: none;
+    margin: 0 0.5rem;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .navbar button:hover {
+    background-color: #e74c3c; /* svetlejša rdeča */
+  }
+  
+  /* Glavni vsebinski del */
+  .main-content {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  /* O meni stran */
+  .about-section {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  
+  .profile-image {
+    width: 250px;
+    height: auto;
+    object-fit: cover;
+    border: 2px solid #c0392b; /* rdeč rob slike */
+    border-radius: 5px;
+  }
+  
+  .about-text {
+    flex: 1;
+  }
+  
+  .about-text h1 {
+    color: #c0392b; /* rdeč naslov */
+    margin-bottom: 1rem;
+  }
+  
+  .about-text h2 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #c0392b;
+  }
+  
+  .about-text ul {
+    margin-left: 1.5rem;
+    list-style: square;
+    margin-bottom: 1rem;
+  }
+  
+  .about-text p,
+  .about-text li {
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Aktivnosti stran */
+  .activities-section h1 {
+    color: #c0392b;
+    margin-bottom: 1rem;
+  }
+  
+  .input-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .input-group input[type="text"],
+  .input-group select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+  }
+  
+  .input-group button {
+    background-color: #c0392b;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .input-group button:hover {
+    background-color: #e74c3c;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  table th,
+  table td {
+    border: 1px solid #ddd;
+    padding: 0.8rem;
+    text-align: left;
+  }
+  
+  table th {
+    background-color: #c0392b;
+    color: #fff;
+  }
+  
+  .remove-btn {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  
+  .remove-btn:hover {
+    background-color: #444;
+  }
+  
+  .kojc-banner {
+    text-align: center;
+    font-size: 2rem;      /* Large text */
+    font-weight: bold;    /* Bold */
+    color: #c0392b;           /* Red color */
+    margin-top: 10px;     /* Space between image and text */
+  }
