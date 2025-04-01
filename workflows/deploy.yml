@@ -1,0 +1,21 @@
+name: Auto Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy na EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: 3.65.30.246           # Tvoj javni IP EC2 instance
+        username: admin             # Uporabniško ime na EC2
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd /var/www/html
+          git pull origin main
