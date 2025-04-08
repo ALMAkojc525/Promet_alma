@@ -11,6 +11,14 @@
     color: #000;
   }
   
+  .banner {
+    background: #c0392b;
+    color: white;
+    text-align: center;
+    padding: 0.5rem;
+    font-weight: bold;
+  }
+
   /* Navigacijska vrstica */
   .navbar {
     background-color: #000;
