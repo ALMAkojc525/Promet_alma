@@ -43,7 +43,25 @@
     </section>
   </main>
 
-  <script>
+<script>
+  async function naloziAvtomobile() {
+    const res = await fetch("api_avtomobili.php");
+    const data = await res.json();
+    const tabela = document.getElementById("avtomobiliTabela");
+    tabela.innerHTML = "";
+
+    data.forEach(a => {
+      const vrstica = document.createElement("tr");
+      vrstica.innerHTML = `
+        <td>${a.datum_zajema}</td>
+        <td>${a.stevilo}</td>
+        <td>${a.kraj}</td>
+        <td><button class="remove-btn" onclick="odstraniAvtomobil(${a.stevilka})">X</button></td>
+      `;
+      tabela.appendChild(vrstica);
+    });
+  }
+
   async function dodajAvtomobil() {
     const stevilo = parseInt(document.getElementById("steviloInput").value.trim()) || 0;
     const kraj = document.getElementById("krajInput").value.trim();
@@ -66,6 +84,20 @@
     document.getElementById("krajInput").value = "";
     naloziAvtomobile();
   }
-  </script>
+
+  async function odstraniAvtomobil(id) {
+    const res = await fetch("api_avtomobili.php?action=izbrisi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id })
+    });
+
+    const odgovor = await res.json();
+    alert(odgovor.success || odgovor.error);
+    naloziAvtomobile();
+  }
+
+  window.onload = naloziAvtomobile;
+</script>
 </body>
 </html>
