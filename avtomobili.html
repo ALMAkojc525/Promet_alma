@@ -8,28 +8,34 @@
 </head>
 <body>
 
-  <!-- Navigacija -->
   <nav class="navbar">
     <button onclick="window.location.href='index.html'">O meni</button>
     <button onclick="window.location.href='alma_mater.html'">Alma mater</button>
     <button onclick="window.location.href='aktivnosti.html'">Moje aktivnosti</button>
     <button onclick="window.location.href='mercator.html'">Mercator nakup</button>
     <button onclick="window.location.href='avtomobili.html'">Avtomobili</button>
-	<button onclick="window.location.href='hello.html'">S3 Test</button>
-
+    <button onclick="window.location.href='hello.html'">S3 Test</button>
   </nav>
 
   <main class="main-content">
     <section class="activities-section">
       <h1>Promet avtomobilov</h1>
-      <p>Tabela s številom avtomobilov, ki jih naša zunanja naprava avtomatsko šteje.</p>
+
+		<!-- Vnosna polja za nov zapis -->
+		<div class="input-group">
+		  <input type="number" id="steviloInput" placeholder="Število" />
+		  <input type="text" id="krajInput" placeholder="Kraj" />
+		  <button onclick="dodajAvtomobil()">Dodaj</button>
+		</div>
+
+      <!-- Tabela -->
       <table>
         <thead>
           <tr>
-            <th>Št.</th>
             <th>Datum</th>
             <th>Število</th>
             <th>Kraj</th>
+            <th>Odstrani</th>
           </tr>
         </thead>
         <tbody id="avtomobiliTabela"></tbody>
@@ -38,27 +44,28 @@
   </main>
 
   <script>
-    async function naloziAvtomobile() {
-      const res = await fetch("api_avtomobili.php");
-      const data = await res.json();
-      const tabela = document.getElementById("avtomobiliTabela"); // <-- POPRAVLJENO
-  
-      tabela.innerHTML = "";
-  
-      data.forEach(a => {
-        const vrstica = document.createElement("tr");
-        vrstica.innerHTML = `
-          <td>${a.stevilka}</td>
-          <td>${a.datum_zajema}</td>
-          <td>${a.stevilo}</td>
-          <td>${a.kraj}</td>
-        `;
-        tabela.appendChild(vrstica);
-      });
+  async function dodajAvtomobil() {
+    const stevilo = parseInt(document.getElementById("steviloInput").value.trim()) || 0;
+    const kraj = document.getElementById("krajInput").value.trim();
+
+    if (!kraj || stevilo <= 0) {
+      alert("Vnesi pozitivno število in kraj.");
+      return;
     }
-  
-    window.onload = naloziAvtomobile;
+
+    const res = await fetch("api_avtomobili.php?action=dodaj", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ stevilo, kraj })
+    });
+
+    const odgovor = await res.json();
+    alert(odgovor.success || odgovor.error);
+
+    document.getElementById("steviloInput").value = "";
+    document.getElementById("krajInput").value = "";
+    naloziAvtomobile();
+  }
   </script>
-  
 </body>
 </html>
