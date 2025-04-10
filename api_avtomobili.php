@@ -43,7 +43,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'izbrisi') {
 }
 
 // PRIKAZ VSEH ZAPISOV
-$sql = "SELECT * FROM prehod_avtomobilov ORDER BY datum_zajema DESC";
+$sql = "SELECT stevilka, datum_zig AS datum_zajema, stevilo, kraj FROM prehod_avtomobilov ORDER BY datum_zig DESC";
+
 $result = $conn->query($sql);
 $rows = $result->fetch_all(MYSQLI_ASSOC);
 echo json_encode($rows);
