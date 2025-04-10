@@ -23,7 +23,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'dodaj') {
         exit;
     }
 
-    $stmt = $conn->prepare("INSERT INTO prehod_avtomobilov (datum_zajema, stevilo, kraj) VALUES (NOW(), ?, ?)");
+    $stmt = $conn->prepare("SELECT stevilka, datum_zig AS datum_zajema, stevilo, kraj FROM prehod_avtomobilov ORDER BY datum_zig DESC");
     $stmt->bind_param("is", $stevilo, $kraj);
     $stmt->execute();
     echo json_encode(["success" => "Zapis uspešno dodan."]);
